@@ -7,24 +7,6 @@ namespace ExecutableService
 {
 	partial class ExecutableService : ServiceBase
 	{
-		/// <summary>
-		///		ServiceBase overrides
-		/// </summary>
-
-		protected override void OnStart(string[] args)
-		{
-			StartService();
-		}
-
-		protected override void OnStop()
-		{
-			StopService();
-		}
-
-		/// <summary>
-		///		Actual service stuff
-		/// </summary>
-
 		private bool running;
 		private Executable exec;
 		private Process program;
@@ -32,20 +14,23 @@ namespace ExecutableService
 
 		public ExecutableService()
 		{
+			ServiceName = Program.GetServiceName();
 			running = false;
 			program = new Process();
 			thread = new Thread(new ThreadStart(RunThread));
 			thread.IsBackground = true;
 		}
 
-		public void StartService()
+		protected override void OnStart(string[] args)
 		{
-			exec = Methods.ReadConfiguration(ServiceName);
+			exec = Methods.ReadExecutable(ServiceName);
 			running = true;
 			thread.Start();
+
+			base.OnStart(args);
 		}
 
-		public void StopService()
+		protected override void OnStop()
 		{
 			running = false;
 			program.CloseMainWindow();
@@ -54,6 +39,8 @@ namespace ExecutableService
 				program.Kill();
 				thread.Abort();
 			}
+
+			base.OnStop();
 		}
 
 		private void RunThread()
@@ -78,9 +65,11 @@ namespace ExecutableService
 				Thread.Sleep(1000);
 
 				// Reload data from config in case of changes
-				exec = Methods.ReadConfiguration(ServiceName);
+				exec = Methods.ReadExecutable(ServiceName);
 			} while (running && exec.AutoRestart);
 			// Repeat unless service was stopped or does not auto restart
+
+			Stop();
 		}
 	}
 }

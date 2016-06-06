@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml.Serialization;
 
 namespace ExecutableLibrary
 {
@@ -14,34 +15,34 @@ namespace ExecutableLibrary
 			}
 		}
 
-		public static string ApplicationPath {
-			get {
-				return Path.Combine(MainDirectory, "ExecutableService.exe");
-			}
-		}
-
 		public static string GetDirectory(string name)
 		{
 			return MainDirectory + Path.DirectorySeparatorChar + name;
 		}
 
-		public static string GetConfiguration(string name)
+		public static string GetService(string name)
 		{
-			return GetDirectory(name) + ".bin";
+			return Path.Combine(GetDirectory(name), "ExecutableService.exe");
 		}
 
-		public static Executable ReadConfiguration(string name)
+		public static string GetExecutable(string name)
 		{
-			FileStream stream = File.OpenRead(GetConfiguration(name));
-			Executable exec = new BinaryFormatter().Deserialize(stream) as Executable;
+			return Path.Combine(GetDirectory(name), "data.xml");
+		}
+
+		public static Executable ReadExecutable(string name)
+		{
+			FileStream stream = File.OpenRead(GetExecutable(name));
+			Executable exec = new XmlSerializer(typeof(Executable)).Deserialize(stream) as Executable;
 			stream.Close();
 			return exec;
 		}
 
-		public static void WriteConfiguration(Executable exec)
+		public static void SaveExecutable(Executable exec)
 		{
-			FileStream stream = File.OpenWrite(GetConfiguration(exec.Name));
-			new BinaryFormatter().Serialize(stream, exec);
+			Directory.CreateDirectory(GetDirectory(exec.Name));
+			FileStream stream = File.OpenWrite(GetExecutable(exec.Name));
+			new XmlSerializer(typeof(Executable)).Serialize(stream, exec);
 			stream.Close();
 		}
 	}

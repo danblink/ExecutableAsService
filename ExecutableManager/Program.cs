@@ -12,8 +12,7 @@ namespace ExecutableManager
 		static void Main()
 		{
 			Directory.CreateDirectory(Methods.MainDirectory);
-			File.WriteAllBytes(Methods.ApplicationPath, Properties.Resources.ExecutableService);
-			
+
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			Application.Run(new ManagerWindow());
@@ -22,12 +21,18 @@ namespace ExecutableManager
 		public static List<Executable> LoadList()
 		{
 			List<Executable> executables = new List<Executable>();
-			string[] files = Directory.GetFiles(Methods.MainDirectory, "*.bin");
+			string[] files = Directory.GetDirectories(Methods.MainDirectory);
 			foreach (string file in files)
 			{
-				executables.Add(Methods.ReadConfiguration(Path.GetFileNameWithoutExtension(file)));
+				executables.Add(Methods.ReadExecutable(Path.GetFileNameWithoutExtension(file)));
 			}
 			return executables;
+		}
+
+		public static void WriteService(string name)
+		{
+			Directory.CreateDirectory(Methods.GetDirectory(name));
+			File.WriteAllBytes(Methods.GetService(name), Properties.Resources.ExecutableService);
 		}
 	}
 }

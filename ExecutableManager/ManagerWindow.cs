@@ -95,14 +95,14 @@ namespace ExecutableManager
 					}
 
 					// Save configuration
-					Methods.WriteConfiguration(executable);
+					Methods.SaveExecutable(executable);
 
 					if (current.FirstOrDefault(exe => exe.Name == executable.Name) == null)
 					{
 						// Install new services
-						string test = Assembly.GetExecutingAssembly().Location;
 						Directory.CreateDirectory(Methods.GetDirectory(executable.Name));
-						ManagedInstallerClass.InstallHelper(new string[] { "/Logfile", "/InstallStateDir=" + Methods.GetDirectory(executable.Name), "/name=" + executable.Name, Methods.ApplicationPath });
+						Program.WriteService(executable.Name);
+						ManagedInstallerClass.InstallHelper(new string[] { Methods.GetService(executable.Name) });
 					}
 				}
 
@@ -111,9 +111,9 @@ namespace ExecutableManager
 					if (executables.FirstOrDefault(exe => exe.Name == executable.Name) == null)
 					{
 						// Uninstall old services
-						ManagedInstallerClass.InstallHelper(new string[] { "/u", "/Logfile", "/InstallStateDir=" + Methods.GetDirectory(executable.Name), "/name=" + executable.Name, Methods.ApplicationPath });
-						Directory.Delete(Methods.GetDirectory(executable.Name));
-						File.Delete(Methods.GetConfiguration(executable.Name));
+						ManagedInstallerClass.InstallHelper(new string[] { "/u", Methods.GetService(executable.Name) });
+						File.Delete(Methods.GetService(executable.Name));
+						Directory.Delete(Methods.GetDirectory(executable.Name), true);
 					}
 				}
 

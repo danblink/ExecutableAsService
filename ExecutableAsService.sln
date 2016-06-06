@@ -5,17 +5,17 @@ VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExecutableService", "ExecutableService\ExecutableService.csproj", "{D7CE674D-A6E5-40D5-82F2-1AD863B62439}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ExecutableLibrary", "ExecutableLibrary\ExecutableLibrary.shproj", "{8DB3B27C-0EE3-4E53-BCA2-149E717D2B96}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExecutableManager", "ExecutableManager\ExecutableManager.csproj", "{8168A442-4D40-4D14-A8C6-10CB8232DA3E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D7CE674D-A6E5-40D5-82F2-1AD863B62439} = {D7CE674D-A6E5-40D5-82F2-1AD863B62439}
 	EndProjectSection
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ExecutableLibrary", "ExecutableLibrary\ExecutableLibrary.shproj", "{53FC368E-99C9-48E4-8853-AEC5205E3B17}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		ExecutableLibrary\ExecutableLibrary.projitems*{8db3b27c-0ee3-4e53-bca2-149e717d2b96}*SharedItemsImports = 13
 		ExecutableLibrary\ExecutableLibrary.projitems*{8168a442-4d40-4d14-a8c6-10cb8232da3e}*SharedItemsImports = 4
+		ExecutableLibrary\ExecutableLibrary.projitems*{53fc368e-99c9-48e4-8853-aec5205e3b17}*SharedItemsImports = 13
 		ExecutableLibrary\ExecutableLibrary.projitems*{d7ce674d-a6e5-40d5-82f2-1ad863b62439}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

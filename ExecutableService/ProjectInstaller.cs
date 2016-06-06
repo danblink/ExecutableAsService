@@ -18,6 +18,7 @@ namespace ExecutableService
 
 			serviceInstaller = new ServiceInstaller();
 			serviceInstaller.StartType = ServiceStartMode.Automatic;
+			serviceInstaller.ServiceName = Program.GetServiceName();
 
 			Installers.AddRange(new Installer[] {
 				serviceProcessInstaller,
@@ -27,13 +28,13 @@ namespace ExecutableService
 
 		protected override void OnBeforeInstall(IDictionary savedState)
 		{
-			serviceInstaller.ServiceName = Context.Parameters["name"];
+			//serviceInstaller.ServiceName = Context.Parameters["name"];
 			base.OnBeforeInstall(savedState);
 		}
 
 		protected override void OnBeforeUninstall(IDictionary savedState)
 		{
-			serviceInstaller.ServiceName = Context.Parameters["name"];
+			//serviceInstaller.ServiceName = Context.Parameters["name"];
 			base.OnBeforeUninstall(savedState);
 		}
 	}
