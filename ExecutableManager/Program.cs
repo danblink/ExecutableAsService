@@ -11,7 +11,10 @@ namespace ExecutableManager
 		static void Main()
 		{
 			Directory.CreateDirectory(Methods.MainDirectory);
-			File.WriteAllBytes(Methods.ServicePath, Properties.Resources.ExecutableService);
+			if (!File.Exists(Methods.ServicePath))
+			{
+				File.WriteAllBytes(Methods.ServicePath, Properties.Resources.ExecutableService);
+			}
 
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
