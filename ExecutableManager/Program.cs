@@ -21,10 +21,13 @@ namespace ExecutableManager
 		public static List<Executable> LoadList()
 		{
 			List<Executable> executables = new List<Executable>();
-			string[] files = Directory.GetDirectories(Methods.MainDirectory);
-			foreach (string file in files)
+			string[] directories = Directory.GetDirectories(Methods.MainDirectory);
+			foreach (string directory in directories)
 			{
-				executables.Add(Methods.ReadExecutable(Path.GetFileNameWithoutExtension(file)));
+				if (File.Exists(Path.Combine(directory, "data.xml")))
+				{
+					executables.Add(Methods.ReadExecutable(Path.GetFileNameWithoutExtension(directory)));
+				}
 			}
 			return executables;
 		}

@@ -1,11 +1,9 @@
 ﻿using ExecutableLibrary;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Configuration.Install;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace ExecutableManager
@@ -102,7 +100,7 @@ namespace ExecutableManager
 						// Install new services
 						Directory.CreateDirectory(Methods.GetDirectory(executable.Name));
 						Program.WriteService(executable.Name);
-						ManagedInstallerClass.InstallHelper(new string[] { Methods.GetService(executable.Name) });
+						ManagedInstallerClass.InstallHelper(new string[] { "/Logfile", Methods.GetService(executable.Name) });
 					}
 				}
 
@@ -111,9 +109,8 @@ namespace ExecutableManager
 					if (executables.FirstOrDefault(exe => exe.Name == executable.Name) == null)
 					{
 						// Uninstall old services
-						ManagedInstallerClass.InstallHelper(new string[] { "/u", Methods.GetService(executable.Name) });
-						File.Delete(Methods.GetService(executable.Name));
-						Directory.Delete(Methods.GetDirectory(executable.Name), true);
+						ManagedInstallerClass.InstallHelper(new string[] { "/u", "/Logfile", Methods.GetService(executable.Name) });
+						File.Delete(Methods.GetExecutable(executable.Name));
 					}
 				}
 
