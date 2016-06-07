@@ -17,7 +17,9 @@ Feedback is always welcome and feel free to look at/copy code for your own use. 
 
 ### References
 
-Special thanks to [David Scott Turner and his blog post on how to create self-installing Windows Services](http://thedavejay.blogspot.co.uk/2012/04/self-installing-c-windows-service-safe.html?m=1) .
+Special thanks to [David Scott Turner and his blog post on how to create self-installing Windows Services](http://thedavejay.blogspot.co.uk/2012/04/self-installing-c-windows-service-safe.html?m=1).
+
+Also thanks to this [StackOverflow answer by NVRAM on how to get the name of a service while it's runnning](http://stackoverflow.com/a/1877404).
 
 This was inspired by [NSSM so be sure to check it out as well](http://www.nssm.cc/).
 
