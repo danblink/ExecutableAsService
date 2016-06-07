@@ -1,5 +1,7 @@
 ﻿using ExecutableLibrary;
 using System.Diagnostics;
+using System.Linq;
+using System.Management;
 using System.ServiceProcess;
 using System.Threading;
 
@@ -7,24 +9,26 @@ namespace ExecutableService
 {
 	partial class ExecutableService : ServiceBase
 	{
+		private string name;
+		private Executable executable;
+
 		private bool running;
-		private Executable exec;
 		private Process program;
 		private Thread thread;
 
-		public ExecutableService()
-		{
-			ServiceName = Program.GetServiceName();
-			running = false;
-			program = new Process();
-			thread = new Thread(new ThreadStart(RunThread));
-			thread.IsBackground = true;
-		}
-
 		protected override void OnStart(string[] args)
 		{
-			exec = Methods.ReadExecutable(ServiceName);
+			// Gets name of running service, code from StackOverflow
+			string query = "SELECT * FROM Win32_Service where ProcessId = " + Process.GetCurrentProcess().Id;
+			ManagementObjectCollection collection = new ManagementObjectSearcher(query).Get();
+			name = collection.OfType<ManagementObject>().First()["name"].ToString();
+
 			running = true;
+
+			program = new Process();
+
+			thread = new Thread(new ThreadStart(RunThread));
+			thread.IsBackground = true;
 			thread.Start();
 
 			base.OnStart(args);
@@ -32,12 +36,15 @@ namespace ExecutableService
 
 		protected override void OnStop()
 		{
-			running = false;
-			program.CloseMainWindow();
-			if (!thread.Join(5000))
+			if (!program.HasExited)
 			{
-				program.Kill();
-				thread.Abort();
+				running = false;
+				program.CloseMainWindow();
+				if (!thread.Join(5000))
+				{
+					program.Kill();
+					thread.Abort();
+				}
 			}
 
 			base.OnStop();
@@ -47,26 +54,25 @@ namespace ExecutableService
 		{
 			do
 			{
+				executable = Methods.LoadExecutable(name);
+
 				// Set start parameters
-				program.StartInfo.FileName = exec.Path;
-				program.StartInfo.Arguments = exec.Arguments;
-				program.StartInfo.WorkingDirectory = exec.Directory;
+				program.StartInfo.FileName = executable.Path;
+				program.StartInfo.Arguments = executable.Arguments;
+				program.StartInfo.WorkingDirectory = executable.Directory;
 
 				// Start the program
 				program.Start();
 
 				// Set running parameters
 				// Not implemented yet
-				//program.ProcessorAffinity = exec.Affinity;
-				//program.PriorityClass = exec.Priority;
+				//program.ProcessorAffinity = executable.Affinity;
+				//program.PriorityClass = executable.Priority;
 
 				// Pause until the program exits
 				program.WaitForExit();
 				Thread.Sleep(1000);
-
-				// Reload data from config in case of changes
-				exec = Methods.ReadExecutable(ServiceName);
-			} while (running && exec.AutoRestart);
+			} while (running && executable.AutoRestart);
 			// Repeat unless service was stopped or does not auto restart
 
 			Stop();

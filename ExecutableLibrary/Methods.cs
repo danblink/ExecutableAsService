@@ -1,49 +1,67 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Configuration.Install;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
 
 namespace ExecutableLibrary
 {
 	public class Methods
 	{
+		// The common application data folder, where the service folder is stored
 		private static string Common = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
 
-		public static string MainDirectory {
-			get {
-				return Path.Combine(Common, "ExecutableAsServive");
+		// The main directory where the service runs and configurations are stored
+		public static string MainDirectory = Path.Combine(Common, "ExecutableAsServive");
+
+		// The service exectuable path
+		public static string ServicePath = Path.Combine(MainDirectory, "ExecutableService.exe");
+
+		// Get the configuration file path by service name
+		public static string GetConfig(string name)
+		{
+			return Path.Combine(MainDirectory, name + ".xml");
+		}
+
+		public static Executable LoadExecutable(string name)
+		{
+			Executable executable;
+			using (FileStream stream = File.OpenRead(GetConfig(name)))
+			{
+				executable = new XmlSerializer(typeof(Executable)).Deserialize(stream) as Executable;
+				executable.Name = name;
+			}
+			return executable;
+		}
+
+		public static void SaveExecutable(Executable executable)
+		{
+			File.Delete(GetConfig(executable.Name));
+			using (FileStream stream = File.OpenWrite(GetConfig(executable.Name)))
+			{
+				new XmlSerializer(typeof(Executable)).Serialize(stream, executable);
 			}
 		}
 
-		public static string GetDirectory(string name)
+		public static List<Executable> LoadAllExecutables()
 		{
-			return MainDirectory + Path.DirectorySeparatorChar + name;
+			List<Executable> executables = new List<Executable>();
+			string[] files = Directory.GetFiles(MainDirectory, "*.xml");
+			foreach (string file in files)
+			{
+				executables.Add(LoadExecutable(Path.GetFileNameWithoutExtension(file)));
+			}
+			return executables;
 		}
 
-		public static string GetService(string name)
+		public static void InstallService(string name)
 		{
-			return Path.Combine(GetDirectory(name), "ExecutableService.exe");
+			ManagedInstallerClass.InstallHelper(new string[] { "/Logfile", "/name=" + name, ServicePath });
 		}
 
-		public static string GetExecutable(string name)
+		public static void UninstallService(string name)
 		{
-			return Path.Combine(GetDirectory(name), "data.xml");
-		}
-
-		public static Executable ReadExecutable(string name)
-		{
-			FileStream stream = File.OpenRead(GetExecutable(name));
-			Executable exec = new XmlSerializer(typeof(Executable)).Deserialize(stream) as Executable;
-			stream.Close();
-			return exec;
-		}
-
-		public static void SaveExecutable(Executable exec)
-		{
-			Directory.CreateDirectory(GetDirectory(exec.Name));
-			FileStream stream = File.OpenWrite(GetExecutable(exec.Name));
-			new XmlSerializer(typeof(Executable)).Serialize(stream, exec);
-			stream.Close();
+			ManagedInstallerClass.InstallHelper(new string[] { "/u", "/Logfile", "/name=" + name, ServicePath });
 		}
 	}
 }

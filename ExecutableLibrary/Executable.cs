@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Xml.Serialization;
 
 namespace ExecutableLibrary
 {
 	[Serializable]
 	public class Executable
 	{
+		[XmlIgnore]
 		public string Name { get; set; }
 		public string Path { get; set; }
 		public string Arguments { get; set; }

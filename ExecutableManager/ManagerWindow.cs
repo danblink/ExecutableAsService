@@ -1,9 +1,7 @@
 ﻿using ExecutableLibrary;
 using System.Collections.Generic;
-using System.Configuration.Install;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace ExecutableManager
@@ -16,7 +14,7 @@ namespace ExecutableManager
 		{
 			InitializeComponent();
 
-			executables = Program.LoadList();
+			executables = Methods.LoadAllExecutables();
 
 			BindingSource source = new BindingSource();
 			source.DataSource = executables;
@@ -63,7 +61,7 @@ namespace ExecutableManager
 		{
 			if (DialogResult.OK == MessageBox.Show("Are you sure you want to apply these changes? Note that deleting a service is permentant, and that renaming a service requires deleting it and recreating it, so the program will be stopped in the process. Also note that deleting a service may take a few moments.", "", MessageBoxButtons.OKCancel))
 			{
-				List<Executable> current = Program.LoadList();
+				List<Executable> current = Methods.LoadAllExecutables();
 
 				foreach (Executable executable in executables)
 				{
@@ -97,10 +95,7 @@ namespace ExecutableManager
 
 					if (current.FirstOrDefault(exe => exe.Name == executable.Name) == null)
 					{
-						// Install new services
-						Directory.CreateDirectory(Methods.GetDirectory(executable.Name));
-						Program.WriteService(executable.Name);
-						ManagedInstallerClass.InstallHelper(new string[] { "/Logfile", Methods.GetService(executable.Name) });
+						Methods.InstallService(executable.Name);
 					}
 				}
 
@@ -108,9 +103,8 @@ namespace ExecutableManager
 				{
 					if (executables.FirstOrDefault(exe => exe.Name == executable.Name) == null)
 					{
-						// Uninstall old services
-						ManagedInstallerClass.InstallHelper(new string[] { "/u", "/Logfile", Methods.GetService(executable.Name) });
-						File.Delete(Methods.GetExecutable(executable.Name));
+						Methods.UninstallService(executable.Name);
+						File.Delete(Methods.GetConfig(executable.Name));
 					}
 				}
 
