@@ -2,19 +2,17 @@
 using System.Collections.Generic;
 using System.Configuration.Install;
 using System.IO;
+using System.Linq;
+using System.ServiceProcess;
 using System.Xml.Serialization;
 
 namespace ExecutableLibrary
 {
 	public class Methods
 	{
-		// The common application data folder, where the service folder is stored
+		// Some basic strings to help with other methods
 		private static string Common = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-
-		// The main directory where the service runs and configurations are stored
 		public static string MainDirectory = Path.Combine(Common, "ExecutableAsServive");
-
-		// The service exectuable path
 		public static string ServicePath = Path.Combine(MainDirectory, "ExecutableService.exe");
 
 		// Get the configuration file path by service name
@@ -23,6 +21,7 @@ namespace ExecutableLibrary
 			return Path.Combine(MainDirectory, name + ".xml");
 		}
 
+		// Loads a single executable object from its configuration file
 		public static Executable LoadExecutable(string name)
 		{
 			Executable executable;
@@ -34,6 +33,7 @@ namespace ExecutableLibrary
 			return executable;
 		}
 
+		// Saves an exectuable object to its configuration file
 		public static void SaveExecutable(Executable executable)
 		{
 			File.Delete(GetConfig(executable.Name));
@@ -43,6 +43,7 @@ namespace ExecutableLibrary
 			}
 		}
 
+		// Loads all the configuration files and gets their executable objects
 		public static List<Executable> LoadAllExecutables()
 		{
 			List<Executable> executables = new List<Executable>();
@@ -54,14 +55,25 @@ namespace ExecutableLibrary
 			return executables;
 		}
 
+		// Installs a service
 		public static void InstallService(string name)
 		{
-			ManagedInstallerClass.InstallHelper(new string[] { "/Logfile", "/name=" + name, ServicePath });
+			ServiceController service = ServiceController.GetServices().FirstOrDefault(exe => exe.ServiceName == name);
+			if (service == null)
+			{
+				ManagedInstallerClass.InstallHelper(new string[] { "/Logfile", "/name=" + name, ServicePath });
+			}
 		}
 
+		// Uninstalls a service
 		public static void UninstallService(string name)
 		{
-			ManagedInstallerClass.InstallHelper(new string[] { "/u", "/Logfile", "/name=" + name, ServicePath });
+			ServiceController service = ServiceController.GetServices().FirstOrDefault(exe => exe.ServiceName == name);
+			if (service != null)
+			{
+				service.Stop();
+				ManagedInstallerClass.InstallHelper(new string[] { "/u", "/Logfile", "/name=" + name, ServicePath });
+			}
 		}
 	}
 }

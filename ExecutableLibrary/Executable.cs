@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Xml.Serialization;
 
 namespace ExecutableLibrary
@@ -12,9 +13,17 @@ namespace ExecutableLibrary
 		public string Arguments { get; set; }
 		public string Directory { get; set; }
 		public bool AutoRestart { get; set; }
+		public IntPtr Affinity { get; set; }
+		public ProcessPriorityClass Priority { get; set; }
 
-		// Not implemented yet
-		//public IntPtr Affinity { get; set; }
-		//public ProcessPriorityClass Priority { get; set; }
+		public Executable()
+		{
+			Path = "";
+			Arguments = "";
+			Directory = "";
+			AutoRestart = true;
+			Affinity = (IntPtr)0xff;
+			Priority = ProcessPriorityClass.Normal;
+		}
 	}
 }

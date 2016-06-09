@@ -65,9 +65,8 @@ namespace ExecutableService
 				program.Start();
 
 				// Set running parameters
-				// Not implemented yet
-				//program.ProcessorAffinity = executable.Affinity;
-				//program.PriorityClass = executable.Priority;
+				program.ProcessorAffinity = executable.Affinity;
+				program.PriorityClass = executable.Priority;
 
 				// Pause until the program exits
 				program.WaitForExit();
