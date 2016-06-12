@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.ServiceProcess;
 using System.Xml.Serialization;
 
 namespace ExecutableLibrary
@@ -13,8 +14,10 @@ namespace ExecutableLibrary
 		public string Arguments { get; set; }
 		public string Directory { get; set; }
 		public bool AutoRestart { get; set; }
-		public IntPtr Affinity { get; set; }
+		public int Affinity { get; set; }
 		public ProcessPriorityClass Priority { get; set; }
+		[XmlIgnore]
+		public ServiceController Service { get; set; }
 
 		public Executable()
 		{
@@ -22,7 +25,7 @@ namespace ExecutableLibrary
 			Arguments = "";
 			Directory = "";
 			AutoRestart = true;
-			Affinity = (IntPtr)0xff;
+			Affinity = 0xff;
 			Priority = ProcessPriorityClass.Normal;
 		}
 	}

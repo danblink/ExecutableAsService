@@ -71,8 +71,8 @@ namespace ExecutableLibrary
 			ServiceController service = ServiceController.GetServices().FirstOrDefault(exe => exe.ServiceName == name);
 			if (service != null)
 			{
-				service.Stop();
 				ManagedInstallerClass.InstallHelper(new string[] { "/u", "/Logfile", "/name=" + name, ServicePath });
+				File.Delete(GetConfig(name));
 			}
 		}
 	}

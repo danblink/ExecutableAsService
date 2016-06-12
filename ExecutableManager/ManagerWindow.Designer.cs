@@ -28,47 +28,39 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.SaveButton = new System.Windows.Forms.Button();
-			this.ExecutablesList = new System.Windows.Forms.DataGridView();
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+			this.ExecutableList = new System.Windows.Forms.DataGridView();
 			this.NameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.PathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.BrowseColumn = new System.Windows.Forms.DataGridViewButtonColumn();
-			this.ArgumentsColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.DirectoryColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.AutoRestartColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-			((System.ComponentModel.ISupportInitialize)(this.ExecutablesList)).BeginInit();
+			this.SettingsColumn = new System.Windows.Forms.DataGridViewButtonColumn();
+			this.StatusColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.ControlColumn = new System.Windows.Forms.DataGridViewButtonColumn();
+			this.AddButton = new System.Windows.Forms.Button();
+			this.RefreshButton = new System.Windows.Forms.Button();
+			this.ReloadButton = new System.Windows.Forms.Button();
+			((System.ComponentModel.ISupportInitialize)(this.ExecutableList)).BeginInit();
 			this.SuspendLayout();
 			// 
-			// SaveButton
+			// ExecutableList
 			// 
-			this.SaveButton.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.SaveButton.Enabled = false;
-			this.SaveButton.Location = new System.Drawing.Point(0, 421);
-			this.SaveButton.Name = "SaveButton";
-			this.SaveButton.Size = new System.Drawing.Size(843, 23);
-			this.SaveButton.TabIndex = 0;
-			this.SaveButton.Text = "Save changes";
-			this.SaveButton.UseVisualStyleBackColor = true;
-			this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
-			// 
-			// ExecutablesList
-			// 
-			this.ExecutablesList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			this.ExecutablesList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+			this.ExecutableList.AllowUserToAddRows = false;
+			this.ExecutableList.AllowUserToDeleteRows = false;
+			this.ExecutableList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.ExecutableList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			this.ExecutableList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.NameColumn,
-            this.PathColumn,
-            this.BrowseColumn,
-            this.ArgumentsColumn,
-            this.DirectoryColumn,
-            this.AutoRestartColumn});
-			this.ExecutablesList.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.ExecutablesList.Location = new System.Drawing.Point(0, 0);
-			this.ExecutablesList.Name = "ExecutablesList";
-			this.ExecutablesList.Size = new System.Drawing.Size(843, 421);
-			this.ExecutablesList.TabIndex = 1;
-			this.ExecutablesList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ExecutablesList_CellContentClick);
-			this.ExecutablesList.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.ExecutablesList_CellValueChanged);
-			this.ExecutablesList.DefaultValuesNeeded += new System.Windows.Forms.DataGridViewRowEventHandler(this.ExecutablesList_DefaultValuesNeeded);
+            this.SettingsColumn,
+            this.StatusColumn,
+            this.ControlColumn});
+			this.ExecutableList.Location = new System.Drawing.Point(12, 12);
+			this.ExecutableList.Name = "ExecutableList";
+			this.ExecutableList.ReadOnly = true;
+			this.ExecutableList.RowHeadersVisible = false;
+			this.ExecutableList.Size = new System.Drawing.Size(344, 420);
+			this.ExecutableList.TabIndex = 0;
+			this.ExecutableList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ExecutableList_CellContentClick);
 			// 
 			// NameColumn
 			// 
@@ -76,71 +68,97 @@
 			this.NameColumn.DataPropertyName = "Name";
 			this.NameColumn.HeaderText = "Name";
 			this.NameColumn.Name = "NameColumn";
+			this.NameColumn.ReadOnly = true;
 			// 
-			// PathColumn
+			// SettingsColumn
 			// 
-			this.PathColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-			this.PathColumn.DataPropertyName = "Path";
-			this.PathColumn.HeaderText = "Path";
-			this.PathColumn.Name = "PathColumn";
-			this.PathColumn.ReadOnly = true;
+			this.SettingsColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+			dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+			dataGridViewCellStyle1.NullValue = "Settings";
+			this.SettingsColumn.DefaultCellStyle = dataGridViewCellStyle1;
+			this.SettingsColumn.HeaderText = "Settings";
+			this.SettingsColumn.Name = "SettingsColumn";
+			this.SettingsColumn.ReadOnly = true;
+			this.SettingsColumn.Width = 51;
 			// 
-			// BrowseColumn
+			// StatusColumn
 			// 
-			this.BrowseColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-			this.BrowseColumn.HeaderText = "Browse";
-			this.BrowseColumn.Name = "BrowseColumn";
-			this.BrowseColumn.Text = "Browse";
-			this.BrowseColumn.UseColumnTextForButtonValue = true;
-			this.BrowseColumn.Width = 48;
+			this.StatusColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+			this.StatusColumn.HeaderText = "Status";
+			this.StatusColumn.Name = "StatusColumn";
+			this.StatusColumn.ReadOnly = true;
 			// 
-			// ArgumentsColumn
+			// ControlColumn
 			// 
-			this.ArgumentsColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-			this.ArgumentsColumn.DataPropertyName = "Arguments";
-			this.ArgumentsColumn.HeaderText = "Arguments";
-			this.ArgumentsColumn.Name = "ArgumentsColumn";
+			this.ControlColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+			dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+			dataGridViewCellStyle2.NullValue = "Unavailable";
+			this.ControlColumn.DefaultCellStyle = dataGridViewCellStyle2;
+			this.ControlColumn.HeaderText = "Control";
+			this.ControlColumn.Name = "ControlColumn";
+			this.ControlColumn.ReadOnly = true;
+			this.ControlColumn.Width = 46;
 			// 
-			// DirectoryColumn
+			// AddButton
 			// 
-			this.DirectoryColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-			this.DirectoryColumn.DataPropertyName = "Directory";
-			this.DirectoryColumn.HeaderText = "Directory";
-			this.DirectoryColumn.Name = "DirectoryColumn";
-			this.DirectoryColumn.Visible = false;
+			this.AddButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.AddButton.Location = new System.Drawing.Point(12, 438);
+			this.AddButton.Name = "AddButton";
+			this.AddButton.Size = new System.Drawing.Size(75, 23);
+			this.AddButton.TabIndex = 1;
+			this.AddButton.Text = "Add";
+			this.AddButton.UseVisualStyleBackColor = true;
+			this.AddButton.Click += new System.EventHandler(this.AddButton_Click);
 			// 
-			// AutoRestartColumn
+			// RefreshButton
 			// 
-			this.AutoRestartColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-			this.AutoRestartColumn.DataPropertyName = "AutoRestart";
-			this.AutoRestartColumn.HeaderText = "Auto Restart";
-			this.AutoRestartColumn.Name = "AutoRestartColumn";
-			this.AutoRestartColumn.Width = 72;
+			this.RefreshButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.RefreshButton.Location = new System.Drawing.Point(281, 438);
+			this.RefreshButton.Name = "RefreshButton";
+			this.RefreshButton.Size = new System.Drawing.Size(75, 23);
+			this.RefreshButton.TabIndex = 2;
+			this.RefreshButton.Text = "Refresh";
+			this.RefreshButton.UseVisualStyleBackColor = true;
+			this.RefreshButton.Click += new System.EventHandler(this.RefreshButton_Click);
+			// 
+			// ReloadButton
+			// 
+			this.ReloadButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.ReloadButton.Location = new System.Drawing.Point(200, 438);
+			this.ReloadButton.Name = "ReloadButton";
+			this.ReloadButton.Size = new System.Drawing.Size(75, 23);
+			this.ReloadButton.TabIndex = 3;
+			this.ReloadButton.Text = "Reload";
+			this.ReloadButton.UseVisualStyleBackColor = true;
+			this.ReloadButton.Click += new System.EventHandler(this.ReloadButton_Click);
 			// 
 			// ManagerWindow
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(843, 444);
-			this.Controls.Add(this.ExecutablesList);
-			this.Controls.Add(this.SaveButton);
+			this.ClientSize = new System.Drawing.Size(368, 473);
+			this.Controls.Add(this.ReloadButton);
+			this.Controls.Add(this.RefreshButton);
+			this.Controls.Add(this.AddButton);
+			this.Controls.Add(this.ExecutableList);
 			this.Name = "ManagerWindow";
 			this.Text = "Executables";
-			((System.ComponentModel.ISupportInitialize)(this.ExecutablesList)).EndInit();
+			this.Load += new System.EventHandler(this.ManagerWindow_Load);
+			((System.ComponentModel.ISupportInitialize)(this.ExecutableList)).EndInit();
 			this.ResumeLayout(false);
 
 		}
 
 		#endregion
 
-		private System.Windows.Forms.Button SaveButton;
-		private System.Windows.Forms.DataGridView ExecutablesList;
+		private System.Windows.Forms.DataGridView ExecutableList;
+		private System.Windows.Forms.Button AddButton;
+		private System.Windows.Forms.Button RefreshButton;
 		private System.Windows.Forms.DataGridViewTextBoxColumn NameColumn;
-		private System.Windows.Forms.DataGridViewTextBoxColumn PathColumn;
-		private System.Windows.Forms.DataGridViewButtonColumn BrowseColumn;
-		private System.Windows.Forms.DataGridViewTextBoxColumn ArgumentsColumn;
-		private System.Windows.Forms.DataGridViewTextBoxColumn DirectoryColumn;
-		private System.Windows.Forms.DataGridViewCheckBoxColumn AutoRestartColumn;
+		private System.Windows.Forms.DataGridViewButtonColumn SettingsColumn;
+		private System.Windows.Forms.DataGridViewTextBoxColumn StatusColumn;
+		private System.Windows.Forms.DataGridViewButtonColumn ControlColumn;
+		private System.Windows.Forms.Button ReloadButton;
 	}
 }
 

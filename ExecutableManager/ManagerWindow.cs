@@ -1,114 +1,123 @@
 ﻿using ExecutableLibrary;
+using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.ServiceProcess;
 using System.Windows.Forms;
 
 namespace ExecutableManager
 {
 	public partial class ManagerWindow : Form
 	{
-		private static List<Executable> executables = new List<Executable>();
+		BindingSource source;
 
 		public ManagerWindow()
 		{
 			InitializeComponent();
 
-			executables = Methods.LoadAllExecutables();
+			source = new BindingSource();
+			ExecutableList.DataSource = source;
+			ExecutableList.AutoGenerateColumns = false;
 
-			BindingSource source = new BindingSource();
-			source.DataSource = executables;
-			ExecutablesList.DataSource = source;
+			Reload();
+
+			Timer timer = new Timer();
+			timer.Tick += delegate (object sender, EventArgs e)
+			{
+				RefreshStatus();
+			};
+			timer.Interval = 5000;
+			timer.Start();
 		}
 
-		private void ExecutablesList_CellContentClick(object sender, DataGridViewCellEventArgs e)
+		private void ManagerWindow_Load(object sender, EventArgs e)
 		{
-			DataGridView grid = sender as DataGridView;
-			if (e.RowIndex >= 0 && grid.Columns[e.ColumnIndex] == BrowseColumn)
+			RefreshStatus();
+		}
+
+		public void Reload()
+		{
+			List<Executable> executables = Methods.LoadAllExecutables();
+			ServiceController[] services = ServiceController.GetServices();
+
+			foreach (Executable executable in executables)
 			{
-				DataGridViewRow row = grid.Rows[e.RowIndex];
+				executable.Service = services.FirstOrDefault(exe => exe.ServiceName == executable.Name);
+			}
 
-				OpenFileDialog file = new OpenFileDialog();
-				file.Title = "Select the executable you want to run as a service.";
-				file.InitialDirectory = row.Cells["PathColumn"].Value as string;
-				file.CheckFileExists = true;
+			source.DataSource = executables;
+			ExecutableList.Refresh();
+		}
 
-				if (file.ShowDialog() == DialogResult.OK)
+		public void RefreshStatus()
+		{
+			foreach (DataGridViewRow row in ExecutableList.Rows)
+			{
+				Executable executable = row.DataBoundItem as Executable;
+				if (executable.Service != null)
 				{
-					row.Cells["PathColumn"].Value = file.FileName;
-
-					FolderBrowserDialog folder = new FolderBrowserDialog();
-					folder.SelectedPath = Path.GetDirectoryName(file.FileName);
-					folder.Description = "Select the working directory for the executable, or just press OK to use the executable's directory.";
-					folder.ShowDialog();
-					row.Cells["DirectoryColumn"].Value = folder.SelectedPath;
+					row.Cells["StatusColumn"].Value = executable.Service.Status.ToString();
+					switch (executable.Service.Status)
+					{
+						case ServiceControllerStatus.Running:
+							row.Cells["ControlColumn"].Value = "Stop";
+							break;
+						case ServiceControllerStatus.Stopped:
+							row.Cells["ControlColumn"].Value = "Start";
+							break;
+						default:
+							row.Cells["ControlColumn"].Value = "Error";
+							break;
+					}
+				}
+				else
+				{
+					row.Cells["StatusColumn"].Value = "Error";
+					row.Cells["ControlColumn"].Value = "Error";
 				}
 			}
 		}
 
-		private void ExecutablesList_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+		private void AddButton_Click(object sender, System.EventArgs e)
 		{
-			SaveButton.Enabled = true;
+			new SettingsWindow().ShowDialog();
+			Reload();
 		}
 
-		private void ExecutablesList_DefaultValuesNeeded(object sender, DataGridViewRowEventArgs e)
+		private void ReloadButton_Click(object sender, System.EventArgs e)
 		{
-			e.Row.Cells["BrowseColumn"].Value = "Browse";
-			e.Row.Cells["ArgumentsColumn"].Value = "";
+			Reload();
 		}
 
-		private void SaveButton_Click(object sender, System.EventArgs e)
+		private void RefreshButton_Click(object sender, System.EventArgs e)
 		{
-			if (DialogResult.OK == MessageBox.Show("Are you sure you want to apply these changes? Note that deleting a service is permentant, and that renaming a service requires deleting it and recreating it, so the program will be stopped in the process. Also note that deleting a service may take a few moments.", "", MessageBoxButtons.OKCancel))
+			RefreshStatus();
+		}
+
+		private void ExecutableList_CellContentClick(object sender, DataGridViewCellEventArgs e)
+		{
+			if (e.RowIndex >= 0)
 			{
-				List<Executable> current = Methods.LoadAllExecutables();
+				DataGridView grid = sender as DataGridView;
+				DataGridViewColumn column = grid.Columns[e.ColumnIndex];
+				Executable exe = grid.Rows[e.RowIndex].DataBoundItem as Executable;
 
-				foreach (Executable executable in executables)
+				if (column == SettingsColumn)
 				{
-					// Validate service name
-					if (executable.Name == null)
+					new SettingsWindow(exe).ShowDialog();
+					Reload();
+				}
+				else if (column == ControlColumn)
+				{
+					if (exe.Service.Status == ServiceControllerStatus.Running)
 					{
-						MessageBox.Show("A service was not given a name. Save aborted.");
-						return;
+						exe.Service.Stop();
 					}
-
-					// Validate service name
-					char[] invalids = Path.GetInvalidPathChars();
-					foreach (char invalid in invalids)
+					else if (exe.Service.Status == ServiceControllerStatus.Stopped)
 					{
-						if (executable.Name.Contains(invalid + ""))
-						{
-							MessageBox.Show("The service name \"" + executable.Name + "\" is not valid. Save aborted.");
-							return;
-						}
-					}
-
-					// Validate executable path
-					if (executable.Path == null || executable.Directory == null)
-					{
-						MessageBox.Show("The service \"" + executable.Name + "\" does not have a set path. Save aborted.");
-						return;
-					}
-
-					// Save configuration
-					Methods.SaveExecutable(executable);
-
-					if (current.FirstOrDefault(exe => exe.Name == executable.Name) == null)
-					{
-						Methods.InstallService(executable.Name);
+						exe.Service.Start();
 					}
 				}
-
-				foreach (Executable executable in current)
-				{
-					if (executables.FirstOrDefault(exe => exe.Name == executable.Name) == null)
-					{
-						Methods.UninstallService(executable.Name);
-						File.Delete(Methods.GetConfig(executable.Name));
-					}
-				}
-
-				MessageBox.Show("Save complete!");
 			}
 		}
 	}

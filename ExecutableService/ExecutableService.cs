@@ -1,4 +1,5 @@
 ﻿using ExecutableLibrary;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Management;
@@ -65,7 +66,7 @@ namespace ExecutableService
 				program.Start();
 
 				// Set running parameters
-				program.ProcessorAffinity = executable.Affinity;
+				program.ProcessorAffinity = (IntPtr)executable.Affinity;
 				program.PriorityClass = executable.Priority;
 
 				// Pause until the program exits
