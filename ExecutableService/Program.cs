@@ -1,4 +1,5 @@
-﻿using System.ServiceProcess;
+﻿using System.Diagnostics;
+using System.ServiceProcess;
 
 namespace ExecutableService
 {

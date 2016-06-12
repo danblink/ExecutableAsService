@@ -47,7 +47,7 @@
 			this.PriorityLabel = new System.Windows.Forms.Label();
 			this.SaveButton = new System.Windows.Forms.Button();
 			this.DeleteButton = new System.Windows.Forms.Button();
-			this.CancelButton = new System.Windows.Forms.Button();
+			this.SettingsCancelButton = new System.Windows.Forms.Button();
 			this.BasicGroup.SuspendLayout();
 			this.AdvancedGroup.SuspendLayout();
 			this.SuspendLayout();
@@ -272,23 +272,23 @@
 			this.DeleteButton.Visible = false;
 			this.DeleteButton.Click += new System.EventHandler(this.DeleteButton_Click);
 			// 
-			// CancelButton
+			// SettingsCancelButton
 			// 
-			this.CancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.CancelButton.Location = new System.Drawing.Point(281, 280);
-			this.CancelButton.Name = "CancelButton";
-			this.CancelButton.Size = new System.Drawing.Size(75, 23);
-			this.CancelButton.TabIndex = 4;
-			this.CancelButton.Text = "Cancel";
-			this.CancelButton.UseVisualStyleBackColor = true;
-			this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
+			this.SettingsCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.SettingsCancelButton.Location = new System.Drawing.Point(281, 280);
+			this.SettingsCancelButton.Name = "SettingsCancelButton";
+			this.SettingsCancelButton.Size = new System.Drawing.Size(75, 23);
+			this.SettingsCancelButton.TabIndex = 4;
+			this.SettingsCancelButton.Text = "Cancel";
+			this.SettingsCancelButton.UseVisualStyleBackColor = true;
+			this.SettingsCancelButton.Click += new System.EventHandler(this.SettingsCancelButton_Click);
 			// 
 			// SettingsWindow
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(368, 315);
-			this.Controls.Add(this.CancelButton);
+			this.Controls.Add(this.SettingsCancelButton);
 			this.Controls.Add(this.DeleteButton);
 			this.Controls.Add(this.SaveButton);
 			this.Controls.Add(this.AdvancedGroup);
@@ -324,6 +324,6 @@
 		private System.Windows.Forms.Button DirectoryButton;
 		private System.Windows.Forms.Button SaveButton;
 		private System.Windows.Forms.Button DeleteButton;
-		private System.Windows.Forms.Button CancelButton;
+		private System.Windows.Forms.Button SettingsCancelButton;
 	}
 }

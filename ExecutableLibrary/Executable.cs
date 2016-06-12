@@ -17,7 +17,7 @@ namespace ExecutableLibrary
 		public int Affinity { get; set; }
 		public ProcessPriorityClass Priority { get; set; }
 		[XmlIgnore]
-		public ServiceController Service { get; set; }
+		public ServiceControllerStatus Status { get; set; }
 
 		public Executable()
 		{

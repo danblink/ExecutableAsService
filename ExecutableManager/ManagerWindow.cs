@@ -24,15 +24,10 @@ namespace ExecutableManager
 			Timer timer = new Timer();
 			timer.Tick += delegate (object sender, EventArgs e)
 			{
-				RefreshStatus();
+				Reload();
 			};
 			timer.Interval = 5000;
 			timer.Start();
-		}
-
-		private void ManagerWindow_Load(object sender, EventArgs e)
-		{
-			RefreshStatus();
 		}
 
 		public void Reload()
@@ -42,40 +37,13 @@ namespace ExecutableManager
 
 			foreach (Executable executable in executables)
 			{
-				executable.Service = services.FirstOrDefault(exe => exe.ServiceName == executable.Name);
+				executable.Status = services.FirstOrDefault(exe => exe.ServiceName == executable.Name).Status;
 			}
+
+			EditButton.Enabled = executables.Count >= 1;
 
 			source.DataSource = executables;
 			ExecutableList.Refresh();
-		}
-
-		public void RefreshStatus()
-		{
-			foreach (DataGridViewRow row in ExecutableList.Rows)
-			{
-				Executable executable = row.DataBoundItem as Executable;
-				if (executable.Service != null)
-				{
-					row.Cells["StatusColumn"].Value = executable.Service.Status.ToString();
-					switch (executable.Service.Status)
-					{
-						case ServiceControllerStatus.Running:
-							row.Cells["ControlColumn"].Value = "Stop";
-							break;
-						case ServiceControllerStatus.Stopped:
-							row.Cells["ControlColumn"].Value = "Start";
-							break;
-						default:
-							row.Cells["ControlColumn"].Value = "Error";
-							break;
-					}
-				}
-				else
-				{
-					row.Cells["StatusColumn"].Value = "Error";
-					row.Cells["ControlColumn"].Value = "Error";
-				}
-			}
 		}
 
 		private void AddButton_Click(object sender, System.EventArgs e)
@@ -89,36 +57,12 @@ namespace ExecutableManager
 			Reload();
 		}
 
-		private void RefreshButton_Click(object sender, System.EventArgs e)
+		private void EditButton_Click(object sender, EventArgs e)
 		{
-			RefreshStatus();
-		}
-
-		private void ExecutableList_CellContentClick(object sender, DataGridViewCellEventArgs e)
-		{
-			if (e.RowIndex >= 0)
-			{
-				DataGridView grid = sender as DataGridView;
-				DataGridViewColumn column = grid.Columns[e.ColumnIndex];
-				Executable exe = grid.Rows[e.RowIndex].DataBoundItem as Executable;
-
-				if (column == SettingsColumn)
-				{
-					new SettingsWindow(exe).ShowDialog();
-					Reload();
-				}
-				else if (column == ControlColumn)
-				{
-					if (exe.Service.Status == ServiceControllerStatus.Running)
-					{
-						exe.Service.Stop();
-					}
-					else if (exe.Service.Status == ServiceControllerStatus.Stopped)
-					{
-						exe.Service.Start();
-					}
-				}
-			}
+			DataGridViewRow row = ExecutableList.SelectedCells[0].OwningRow;
+			Executable exe = row.DataBoundItem as Executable;
+			new SettingsWindow(exe).ShowDialog();
+			Reload();
 		}
 	}
 }
