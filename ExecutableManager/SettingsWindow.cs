@@ -125,6 +125,10 @@ namespace ExecutableManager
 			{
 				MessageBox.Show("The selected working directory could not be found.", "Error", MessageBoxButtons.OK);
 			}
+			else if (AffinityBox.SelectedItems.Count == 0)
+			{
+				MessageBox.Show("You must select at least 1 core for the process affinity.", "Error", MessageBoxButtons.OK);
+			}
 			else
 			{
 				return true;
