@@ -1,5 +1,5 @@
 # ExecutableAsService
-A .NET application that allows you to run a program as a Window service.
+A .NET application that allows you to run a program as a Windows service.
 There are already programs that do this out there, but mine is entirely GUI based so it should be easier to use.
 [NSSM] for example does have GUI elements but you still have to use command line arguments to access them.
 [NSSM] also installs itself at the current location so moving it breaks the services, my version self installs to a permenant location.
